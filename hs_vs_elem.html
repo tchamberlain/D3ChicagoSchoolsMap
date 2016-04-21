@@ -2,10 +2,8 @@
 <meta charset="utf-8">
 <body>
   <h1>Map of Schools that Changed Bells in 15/16 School Year</h1>
-  <ul><b>Gray</b> = no change (0 in csv)</ul>
-  <ul><b>Blue</b> = Agreed to Original Change (1 in csv) </ul>
-  <ul><b>Orange</b> = Reverted to Old Bell Schedule (2 in csv) </ul>
-  <ul><b>Red</b> = Agreed to Alternative (3 in csv) </ul>
+  <ul><b>Red</b> = elem school </ul>
+  <ul><b>Blue</b> = high school </ul>
   <p>_________________________</p>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/d3.geo.tile.v0.min.js"></script>
@@ -29,6 +27,7 @@ d3.csv("https://raw.githubusercontent.com/tchamberlain/D3ChicagoSchoolsMap/maste
    data.forEach(function(d) {
        //do some schools not have this? do some schools have lat and long or address but don't have this?
        //we neeed to check!!! 
+
        if(d && d.the_geom !== 'NA'){
                 console.log('do we hav dis?',d.the_geom.split('POINT ('));
         d.coord = d.the_geom.split('POINT')[1]
@@ -39,17 +38,20 @@ d3.csv("https://raw.githubusercontent.com/tchamberlain/D3ChicagoSchoolsMap/maste
    var circles = svg.append("g")
     .selectAll("circle")
       .data(data)
-    .enter().append("circle")
-      .attr("r", 3.1)
+    .enter()
+    .append("circle")
+      .attr("r", 3.5)
       .style("fill", function(d) {
-        if(d.changedBell === '0'){ //no change
-          return 'gray'
-        } else if (d.changedBell === '1'){ // agreed to orig
-          return 'blue'
-        } else if (d.changedBell === '2'){// reverted to old schedule
-          return 'orange'
-        } else if (d.changedBell === '3'){// agreed to alternative
-          return 'red'
+        if(d.changedBell !== '0'){
+          if(d.Grade_Cat === 'HS'){ 
+            return 'blue'
+          } else if(d.Grade_Cat === 'ES'){
+            return 'red'
+          } else {
+            return 'green'
+          }
+        } else{
+          return 'transparent'
         }
     });
       
